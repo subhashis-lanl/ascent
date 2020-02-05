@@ -51,7 +51,7 @@ class VtkM(CMakePackage, CudaPackage):
 
     conflicts("~shared", when="~pic")
 
-    patch('2019_12_vtkm_xl_patch.diff.patch', when='@1.5:')
+    patch('2019_12_vtkm_xl.patch', when='@1.5:')
 
     def cmake_args(self):
         spec = self.spec
