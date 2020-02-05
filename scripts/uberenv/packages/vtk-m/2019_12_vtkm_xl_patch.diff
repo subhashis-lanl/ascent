@@ -1,0 +1,125 @@
+diff --git a/vtkm/internal/Configure.h.in b/vtkm/internal/Configure.h.in
+index 8fd13985b55c5b293da46dbe84a1da076a7d15a7..2324db3f8841ae82452f622cf7a9a98c0efedc7d 100644
+--- a/vtkm/internal/Configure.h.in
++++ b/vtkm/internal/Configure.h.in
+@@ -156,6 +156,26 @@
+ #define VTKM_THIRDPARTY_POST_INCLUDE
+ #endif
+ 
++#if defined(__GLIBCXX__) &&                                                                        \
++  (__GLIBCXX__ < 20150422 || __GLIBCXX__ == 20160726 || __GLIBCXX__ == 20150626)
++// GCC release date mapping
++// 20160726 == 4.9.4
++// 20150626 == 4.9.3
++// 20150422 == 5.1
++// 20141030 == 4.9.2
++// See https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html#abi.versioning.__GLIBCXX__
++// Some context on why this check is useful
++// Components of the c++ standard such as `std::aligned_union` are not something
++// intrinsic to compiler but part of the standard library. Therefore support for these
++// features are determined by what standard library is used versus the compiler.
++// For example by default Intel, PGI, and IBM compilers use the standard library
++// that is provided by a systems default C++ compiler ( generally gcc ). For this
++// reason we have a define that states we are compiling with GLIBCXX_4 which
++// is missing some usefull C++ standard library components
++//
++#define VTKM_USING_GLIBCXX_4
++#endif
++
+ //Determine if current compiler supports vectorization pragma's
+ //if so set the define VTKM_COMPILER_SUPPORTS_VECTOR_PRAGMAS
+ //
+diff --git a/vtkm/internal/Variant.h b/vtkm/internal/Variant.h
+index e93436b141393a35e196976bf17a7ef848c23526..2cb51a46928eac8447b0917c5e5f67750203a75b 100644
+--- a/vtkm/internal/Variant.h
++++ b/vtkm/internal/Variant.h
+@@ -15,11 +15,9 @@
+ #include <vtkm/Deprecated.h>
+ #include <vtkm/List.h>
+ 
+-
++#if defined(VTKM_USING_GLIBCXX_4)
+ // It would make sense to put this in its own header file, but it is hard to imagine needing
+ // aligned_union anywhere else.
+-#if (defined(VTKM_GCC) && (__GNUC__ == 4)) || defined(VTKM_ICC)
+-
+ #include <algorithm>
+ namespace vtkmstd
+ {
+@@ -55,27 +53,8 @@ struct aligned_union
+   using type =
+     vtkmstd::aligned_data_block<alignment_value, vtkmstd::max_size<Len, sizeof(Types)...>::value>;
+ };
+-} // namespace vtkmstd
+-
+-#else // aligned_union supported
+-
+-namespace vtkmstd
+-{
+-
+-using std::aligned_union;
+-
+-} // namespace vtkmstd
+ 
+-#endif
+-
+-// It would make sense to put this in its own header file.
+-#if (defined(VTKM_GCC) && (__GNUC__ == 4))
+-#define VTKM_IS_TRIVIALLY_COPYABLE_NOT_SUPPORTED 1
+-
+-namespace vtkmstd
+-{
+-
+-// GCC 4.8 and 4.9 claim to support C++11, but do not support std::is_trivially_copyable.
++// GCC 4.8 and 4.9 standard library does not support std::is_trivially_copyable.
+ // There is no relyable way to get this information (since it has to come special from
+ // the compiler). For our purposes, we will report as nothing being trivially copyable,
+ // which causes us to call the constructors with everything. This should be fine unless
+@@ -88,16 +67,15 @@ struct is_trivially_copyable : std::false_type
+ 
+ } // namespace vtkmstd
+ 
+-#else // is_trivially_copyable supported
+-
++#else // NOT VTKM_USING_GLIBCXX_4
+ namespace vtkmstd
+ {
+ 
++using std::aligned_union;
+ using std::is_trivially_copyable;
+ 
+ } // namespace vtkmstd
+-
+-#endif // is_trivially_copyable supported
++#endif
+ 
+ namespace vtkm
+ {
+diff --git a/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp b/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
+index a731d5cf751f7aa26ad4b79faea91ce17edbfe52..9e8851bed42f7511bdba70a7d1bff5932826bad3 100644
+--- a/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
++++ b/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
+@@ -92,9 +92,21 @@ namespace diy
+   template<class T>
+   struct Serialization: public detail::Default
+   {
+-#if (defined(__clang__) && !defined(__ppc64__)) || (defined(__GNUC__) && __GNUC__ >= 5)
+-    //exempt power-pc clang variants due to: https://gitlab.kitware.com/vtk/vtk-m/issues/201
++// GCC release date mapping
++// 20160726 == 4.9.4
++// 20150626 == 4.9.3
++// 20150422 == 5.1
++// 20141030 == 4.9.2
++// See https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html#abi.versioning.__GLIBCXX__
++#if defined(__GLIBCXX__) && (__GLIBCXX__ < 20150422 || __GLIBCXX__ == 20160726 || __GLIBCXX__ == 20150626)
++#define VTKMDIY_USING_GLIBCXX_4
++#endif
++
++#if !defined(VTKMDIY_USING_GLIBCXX_4)
++    //exempt glibcxx-4 variants as they don't have is_trivially_copyable implemented
+     static_assert(std::is_trivially_copyable<T>::value, "Default serialization works only for trivially copyable types");
++#else
++# undef VTKMDIY_USING_GLIBCXX_4
+ #endif
+ 
+     static void         save(BinaryBuffer& bb, const T& x)          { bb.save_binary((const char*)  &x, sizeof(T)); }
