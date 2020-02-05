@@ -1,5 +1,5 @@
 diff --git a/vtkm/internal/Configure.h.in b/vtkm/internal/Configure.h.in
-index 8fd13985b55c5b293da46dbe84a1da076a7d15a7..2324db3f8841ae82452f622cf7a9a98c0efedc7d 100644
+index 8fd13985b..2324db3f8 100644
 --- a/vtkm/internal/Configure.h.in
 +++ b/vtkm/internal/Configure.h.in
 @@ -156,6 +156,26 @@
@@ -30,7 +30,7 @@ index 8fd13985b55c5b293da46dbe84a1da076a7d15a7..2324db3f8841ae82452f622cf7a9a98c
  //if so set the define VTKM_COMPILER_SUPPORTS_VECTOR_PRAGMAS
  //
 diff --git a/vtkm/internal/Variant.h b/vtkm/internal/Variant.h
-index e93436b141393a35e196976bf17a7ef848c23526..2cb51a46928eac8447b0917c5e5f67750203a75b 100644
+index e93436b14..2cb51a469 100644
 --- a/vtkm/internal/Variant.h
 +++ b/vtkm/internal/Variant.h
 @@ -15,11 +15,9 @@
@@ -95,10 +95,28 @@ index e93436b141393a35e196976bf17a7ef848c23526..2cb51a46928eac8447b0917c5e5f6775
  
  namespace vtkm
  {
-diff --git a/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp b/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
-index a731d5cf751f7aa26ad4b79faea91ce17edbfe52..9e8851bed42f7511bdba70a7d1bff5932826bad3 100644
---- a/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
-+++ b/vtkm/thirdparty/diy/vtkmdiy/include/vtkmdiy/serialization.hpp
+-- 
+2.24.1
+
+
+From bbd5db31bfa92e70c21ec9a1c722232473bcfa49 Mon Sep 17 00:00:00 2001
+From: Diy Upstream <kwrobot@kitware.com>
+Date: Mon, 16 Dec 2019 09:48:23 -0500
+Subject: [PATCH 2/2] diy 2019-12-16 (e365b66a)
+
+Code extracted from:
+
+    https://gitlab.kitware.com/third-party/diy2.git
+
+at commit e365b66ac9a80d73a49f1c43050bbade2752ff20 (for/vtk-m).
+---
+ include/vtkmdiy/serialization.hpp | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/include/vtkmdiy/serialization.hpp b/include/vtkmdiy/serialization.hpp
+index a731d5cf7..9e8851bed 100644
+--- a/include/vtkmdiy/serialization.hpp
++++ b/include/vtkmdiy/serialization.hpp
 @@ -92,9 +92,21 @@ namespace diy
    template<class T>
    struct Serialization: public detail::Default
@@ -123,3 +141,6 @@ index a731d5cf751f7aa26ad4b79faea91ce17edbfe52..9e8851bed42f7511bdba70a7d1bff593
  #endif
  
      static void         save(BinaryBuffer& bb, const T& x)          { bb.save_binary((const char*)  &x, sizeof(T)); }
+-- 
+2.24.1
+
