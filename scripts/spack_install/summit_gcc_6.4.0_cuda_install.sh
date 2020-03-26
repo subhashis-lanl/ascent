@@ -2,9 +2,12 @@
 # run at root of ascent repo
 #
 date
-# run spack install, this will install ascent@develop
+# setup dest dir
 export ASCENT_VERSION=0.5.2-pre
 export DEST_DIR=$WORLDWORK/csc340/software/ascent/${ASCENT_VERSION}/summit/cuda/gnu
+# make sure dest dir hierarchy exists
+mkdir -p ${DEST_DIR}
+# run spack install, this will install ascent@develop
 python scripts/uberenv/uberenv.py --spec="%gcc" \
        --install \
        --spack-config-dir="scripts/uberenv/spack_configs/olcf/summit/" \
