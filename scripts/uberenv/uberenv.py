@@ -60,6 +60,8 @@ import platform
 import json
 import datetime
 import glob
+import time
+import datetime
 
 from optparse import OptionParser
 
@@ -550,6 +552,13 @@ def main():
         return res
 
 if __name__ == "__main__":
-    sys.exit(main())
+    print("[start time: {0}]".format(datetime.datetime.now()))
+    start_time = time.time()
+    res = main()
+    stop_time = time.time()
+    time_diff = stop_time - start_time
+    print("[stop time: {0}]".format(datetime.datetime.now()))
+    print("[elapsed time: {0}[]".format(datetime.timedelta(seconds=time_diff)))
+    sys.exit(res)
 
 
