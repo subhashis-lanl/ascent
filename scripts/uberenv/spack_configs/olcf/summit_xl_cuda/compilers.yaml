@@ -1,0 +1,17 @@
+compilers:
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    modules:
+      - cuda/10.1.243
+      - xl/16.1.1-5
+    operating_system: rhel7
+    paths:
+     cc:  /sw/summit/xl/16.1.1-5/xlC/16.1.1/bin/xlc  
+     cxx: /sw/summit/xl/16.1.1-5/xlC/16.1.1/bin/xlc++
+     f77: /sw/summit/xl/16.1.1-5/xlf/16.1.1/bin/xlf
+     fc:  /sw/summit/xl/16.1.1-5/xlf/16.1.1/bin/xlf
+    spec: xl@blueos
+    target: ppc64le
+
+
