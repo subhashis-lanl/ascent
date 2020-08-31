@@ -1,0 +1,21 @@
+compilers:
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    #flags:
+    #  cflags: --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1 -std=gnu11 -O2 -qarch=pwr9 -qtune=pwr9
+    #  cxxflags: --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1 -std=c++11 -O2 -qarch=pwr9 -qtune=pwr9
+    #  fflags: --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1 -O2 -qarch=pwr9 -qtune=pwr9
+    #  #P9 add: -qarch=pwr9 -qtune=pwr9
+    modules:
+      - cuda/10.1.243
+      - xl/2020.06.25
+    operating_system: rhel7
+    paths:
+     cc:  /usr/tce/packages/xl/xl-2020.06.25/bin/xlc_r
+     cxx: /usr/tce/packages/xl/xl-2020.06.25/bin/xlc++_r
+     f77: /usr/tce/packages/xl/xl-2020.06.25/bin/xlf_r
+     fc:  /usr/tce/packages/xl/xl-2020.06.25/bin/xlf_r
+    spec: xl@blueos
+    target: ppc64le
+
